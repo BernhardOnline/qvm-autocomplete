@@ -1,0 +1,80 @@
+#!/bin/bash
+#
+# qvm-autocomplete script for BASH, to be used essentially in the dom0 terminal.
+#
+# VMs have 3 possible states: halted, paused, running.
+# According to the qubes-specific commands qvm-* we complete the command with
+# with the list of either (all, running, paused or halted) VMs on the system.
+#
+# The script is easy to understand, maintain, extend. 
+
+# ################## do not touch these #######
+_qvmall()
+{   local cur VMS
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    VMS=$(qvm-ls --raw-list)
+    COMPREPLY=( $(compgen -W "${VMS}"  ${cur}) )
+    return 0
+}
+_qvmrunning()
+{   local cur VMS
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    VMS=$(qvm-ls --raw-data|grep -i running|cut -f1 -d"|")
+    COMPREPLY=( $(compgen -W "${VMS}"  ${cur}) )
+    return 0
+}
+_qvmhalted()
+{   local cur VMS
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    VMS=$(qvm-ls --raw-data|grep -i halted|cut -f1 -d"|")
+    COMPREPLY=( $(compgen -W "${VMS}"  ${cur}) )
+    return 0
+}
+_qvmpaused()
+{   local cur VMS
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    VMS=$(qvm-ls --raw-data|grep -i paused|cut -f1 -d"|")
+    COMPREPLY=( $(compgen -W "${VMS}"  ${cur}) )
+    return 0
+}
+
+# ########### here starts the list of commands. Extend/modify as you like ####
+
+complete -F _qvmall     qvm-appmenus
+complete -F _qvmhalted  qvm-backup
+complete -F _qvmhalted  qvm-backup-restore
+complete -F _qvmrunning qvm-block
+complete -F _qvmall     qvm-check
+complete -F _qvmall     qvm-clone
+complete -F _qvmrunning qvm-console-dispvm
+complete -F _qvmall     qvm-copy
+complete -F _qvmall     qvm-copy-to-vm
+complete -F _qvmrunning qvm-device
+complete -F _qvmall     qvm-features
+complete -F _qvmall     qvm-firewall
+complete -F _qvmrunning qvm-get-image
+complete -F _qvmrunning qvm-get-tinted-image
+complete -F _qvmrunning qvm-kill
+complete -F _qvmall     qvm-ls
+complete -F _qvmall     qvm-move
+complete -F _qvmall     qvm-move-to-vm
+complete -F _qvmrunning qvm-pause
+complete -F _qvmall     qvm-pci
+complete -F _qvmall     qvm-prefs
+complete -F _qvmall     qvm-remove
+complete -F _qvmall     qvm-run
+complete -F _qvmrunning qvm-shutdown
+complete -F _qvmall     qvm-service
+complete -F _qvmhalted  qvm-start
+complete -F _qvmall     qvm-sync-appmenus
+complete -F _qvmall     qvm-tags
+complete -F _qvmall     qvm-template
+complete -F _qvmpaused  qvm-unpause
+complete -F _qvmall     qvm-usb
+complete -F _qvmhalted  qvm-volume
+
+## end qvm-autocomplete script ##
